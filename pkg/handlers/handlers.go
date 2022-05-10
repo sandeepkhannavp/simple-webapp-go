@@ -4,8 +4,11 @@ import (
 	"net/http"
 
 	"github.com/sandeepkhannavp/htmltest/pkg/config"
+	"github.com/sandeepkhannavp/htmltest/pkg/models"
 	"github.com/sandeepkhannavp/htmltest/pkg/render"
 )
+
+//Template data holds data sent from handlers to Templates
 
 //repository used by the handlers
 var Repo *Respository
@@ -29,12 +32,15 @@ func NewHandlers(r *Respository){
 
 //Home is the home page handler
 func (m *Respository)Home(w http.ResponseWriter,r *http.Request){
-	render.RenderTemplate(w,"home.page.html")
-	
+	render.RenderTemplate(w,"home.page.html",&models.TemplateData{})
 }
 
 //About is the about page handler
 func (m *Respository)About(w http.ResponseWriter , r *http.Request){
-	render.RenderTemplate(w,"about.page.html")
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello"
+	render.RenderTemplate(w,"about.page.html",&models.TemplateData{
+		StringMap: stringMap,
+	})
 }
 //render the templates
