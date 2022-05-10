@@ -8,17 +8,15 @@ import (
 	"github.com/sandeepkhannavp/htmltest/pkg/render"
 )
 
-//Template data holds data sent from handlers to Templates
 
-//repository used by the handlers
-var Repo *Respository
-//
+var Repo *Respository //call the associated functions using the repo which is pointer to the structure -- see main
+
+//handlers has it own pointer to application wide config AppConfig which is implemented as struct so it can have associated functions
 type Respository struct{
 	App *config.AppConfig
-
 }
 
-//creates a new repository and return it
+
 func NewRepo(a *config.AppConfig) *Respository{
 	return &Respository{
 		 App:a,
