@@ -8,35 +8,47 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	"github.com/sandeepkhannavp/htmltest/pkg/config"
 )
 
 var functions = template.FuncMap{
 	 
 }
+var app *config.AppConfig
+
+//set the config for the template package
+func NewTemplates(a *config.AppConfig){
+	app=a
+}
 
 //render template using html template
 func RenderTemplate (w http.ResponseWriter, tmpl string){
-	tc,err := CreateTemplateCache()
-	if err!=nil{
-		log.Fatal(err)
+
+	var tc map[string]*template.Template
+
+	//if im in development mode not production - don't use template cache
+	//instead rebuild it on every request
+	if app.UseCache{
+		//get the template cache from app config
+		//when we render a page we are pulling this value from the app config
+		tc = app.TemplateCache
+	}else{
+		tc,_ = CreateTemplateCache()
 	}
+
 	t,ok := tc[tmpl]
 	if !ok{
-		log.Fatal(err)
+		log.Fatal("could not get template from template cache")
 	}
 
 	buf:=new(bytes.Buffer)
 
 	_= t.Execute(buf,nil)
 
-	_ ,err = buf.WriteTo(w)
+	_ ,err := buf.WriteTo(w)
 	if err!=nil{
 		fmt.Println("error writing template to browser",err)
-	}
-	parsedTemplate,_ := template.ParseFiles("./templates/"+tmpl)
-	err = parsedTemplate.Execute(w,nil)
-	if err!=nil{
-		fmt.Println("error while parsing templates")
 	}
 
 }

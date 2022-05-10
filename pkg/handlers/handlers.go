@@ -2,17 +2,39 @@ package handlers
 
 import (
 	"net/http"
+
+	"github.com/sandeepkhannavp/htmltest/pkg/config"
 	"github.com/sandeepkhannavp/htmltest/pkg/render"
 )
 
+//repository used by the handlers
+var Repo *Respository
+//
+type Respository struct{
+	App *config.AppConfig
+
+}
+
+//creates a new repository and return it
+func NewRepo(a *config.AppConfig) *Respository{
+	return &Respository{
+		 App:a,
+	}
+}
+
+//new handlers sets the repositpry for the handlers
+func NewHandlers(r *Respository){
+	Repo = r
+}
+
 //Home is the home page handler
-func Home(w http.ResponseWriter,r *http.Request){
+func (m *Respository)Home(w http.ResponseWriter,r *http.Request){
 	render.RenderTemplate(w,"home.page.html")
 	
 }
 
 //About is the about page handler
-func About(w http.ResponseWriter , r *http.Request){
+func (m *Respository)About(w http.ResponseWriter , r *http.Request){
 	render.RenderTemplate(w,"about.page.html")
 }
 //render the templates
